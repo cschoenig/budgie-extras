@@ -58,7 +58,7 @@ public class DimHelper
                 retrivedDimNames += dim.Name;
                 dim.MaxBrightness = properties[1].to_double();
                 dim.Brightness = properties[2].to_double();
-                dim.Blue = properties[3].to_double();
+                dim.Blue = properties[3].to_int();
                 dim.IsActive = properties[4].to_bool();
 
                 //print(@"Load Dims From Config: %s, %s, %s, %s \n", dim.Name, dim.MaxBrightnessText, dim.BrightnessText, dim.IsActive.to_string());
@@ -92,7 +92,7 @@ public class DimHelper
                         dim.Name = words[0]; 
                         dim.MaxBrightness = 100;
                         dim.Brightness = 100;
-                        dim.Blue = 100;
+                        dim.Blue = 11;
                     
                         if(connectedDeviceCount == 0)
                         {
@@ -127,13 +127,16 @@ public class DimHelper
             GLib.message(@"Dim is not available (Xrandr version >= 1.5.0: $haveXrandr150, Number of Dims: $dimListLength)\n");
         }
     }
-    
-    public void SetBrightness(string name, double brightness, double blue)
+ 
+    public void SetBrightness(string name, double brightness, int blue)
     {
         //print(@"DimHelper.SetBrightness: $name $brightness \n");
         var aOnePercentOfbrightness = brightness / 100;
-        var aOnePercentOfBlue = blue / 100;
-        subprocessHelper.Run({"xrandr", "--output", @"$name", "--gamma", @"1:1:$aOnePercentOfBlue", "--brightness", @"$aOnePercentOfbrightness"});
+        var length = Dim.Whitepoints.length - 1;
+        var gamma = Dim.Whitepoints[0 > blue ? 0 : (length < blue ? length : blue)];
+
+        subprocessHelper.Run({"xrandr", "--output", @"$name", "--gamma", gamma, "--brightness", @"$aOnePercentOfbrightness"});
+        //subprocessHelper.Run({"xrandr", "--output", @"$name", "--brightness", @"$aOnePercentOfbrightness"});
         Save();
     }
 

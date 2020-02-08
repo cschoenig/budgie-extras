@@ -27,6 +27,8 @@ public class CustomScale : Gtk.Scale
     {
         adjustment.value = currentValue;
         adjustment.lower = lower;
+        if(upper != 0)
+            adjustment.upper = upper;
         
         adjustment.step_increment = stepIncrement;
         adjustment.page_increment = pageIncrement;

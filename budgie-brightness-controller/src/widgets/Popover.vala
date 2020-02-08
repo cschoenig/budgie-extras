@@ -84,13 +84,13 @@ public class Popover : Budgie.Popover
 
     public void BuildDim()
     {
-        var menuButton = new CustomMenuButton(_("Dim"));
+        var menuButton = new CustomMenuButton(_("Devices"));
         dimLabel = new Gtk.Label("");
         dimLabel.set_tooltip_text(_("Brightness"));
         blueLabel = new Gtk.Label("");
         blueLabel.set_tooltip_text(_("Temperature"));
-        dimScale = new CustomScale(0, 10, 0, 1, 0.1, 0);
-        blueScale = new CustomScale(0, 10, 0, 1, 0.1, 0);
+        dimScale = new CustomScale(0, 10, 0, 1, 1, 0);
+        blueScale = new CustomScale(11, 0, Dim.Whitepoints.length - 1, 1, 1, 0);
 
         dimHelper.list.foreach((dim)=> 
         {
@@ -113,14 +113,14 @@ public class Popover : Budgie.Popover
         
         dimScale.value_changed.connect(()=> 
         {
-            CurrentDim.Brightness = dimScale.Value;
+            CurrentDim.Brightness = dimScale.Value = (int)dimScale.Value;
             dimLabel.set_text(CurrentDim.BrightnessText);
             dimHelper.SetBrightness(CurrentDim.Name, CurrentDim.Brightness, CurrentDim.Blue);
         });
 
         blueScale.value_changed.connect(()=> 
         {
-            CurrentDim.Blue = blueScale.Value;
+            CurrentDim.Blue = (int)(blueScale.Value = (int)blueScale.Value);
             blueLabel.set_text(CurrentDim.BlueText);
             dimHelper.SetBrightness(CurrentDim.Name, CurrentDim.Brightness, CurrentDim.Blue);
         });
@@ -190,7 +190,7 @@ public class Popover : Budgie.Popover
         dimLabel.set_text(CurrentDim.BrightnessText);
         dimScale.Update(CurrentDim.Brightness, 10, CurrentDim.MaxBrightness);
         blueLabel.set_text(CurrentDim.BlueText);
-        blueScale.Update(CurrentDim.Blue, 10, CurrentDim.MaxBrightness);
+        blueScale.Update(CurrentDim.Blue, 0, Dim.Whitepoints.length - 1);
     }
     //[END Populate]
 
